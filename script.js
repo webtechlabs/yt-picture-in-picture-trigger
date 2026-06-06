@@ -4,7 +4,7 @@
 // @author      dinoosauro
 // @license     mit
 // @match       *://*.youtube.com/*
-// @version     1.0.4
+// @version     1.0.5
 // @namespace   https://github.com/dinoosauro/yt-picture-in-picture-trigger
 // ==/UserScript==
 
@@ -34,6 +34,10 @@
             const btn = document.createElement("button");
             btn.classList.add("ytSpecButtonShapeNextHost", "ytSpecButtonShapeNextTonal", "ytSpecButtonShapeNextMono", "ytSpecButtonShapeNextSizeM", "ytSpecButtonShapeNextIconLeading", "ytSpecButtonShapeNextEnableBackdropFilterExperiment");
 
+            // Add standard attributes for accessibility and fallback native tooltips
+            btn.title = "Picture-in-Picture";
+            btn.setAttribute("aria-label", "Picture-in-Picture");
+
             // The Picture-in-Picture icon, provided from Microsoft's Fluent UI Icons (since Google's Material Design icons are too big)
             const iconContainer = document.createElement("div");
             iconContainer.classList.add("ytSpecButtonShapeNextIcon");
@@ -57,10 +61,9 @@
             c3Icon.append(shapeSpan);
             iconContainer.append(c3Icon);
 
-            // Create the "Picture-in-Picture" text
-            const text = Object.assign(document.createElement("div"), { textContent: "Picture-in-Picture" });
+            // Create the "PiP" text
+            const text = Object.assign(document.createElement("div"), { textContent: "PiP" });
             text.classList.add("ytSpecButtonShapeNextButtonTextContent");
-
 
             // Touch annimation div
             const touch = Object.assign(document.createElement("yt-touch-feedback-shape"), { style: "border-radius: inherit;" });
@@ -69,6 +72,14 @@
             btn.append(iconContainer, text, touch);
             btnView.append(btn);
             main.append(btnView);
+
+          	// Add YouTube's custom tooltip element (Desktop only, as mobile doesn't use hover tooltips)
+        	if (!isMobile) {
+                const ytTooltip = document.createElement("tp-yt-paper-tooltip");
+                ytTooltip.textContent = "Picture-in-Picture";
+                // The tooltip calculates its position based on the parent/sibling it is appended to
+                btnView.append(ytTooltip); 
+        	}
         }
         if (!checkIfMainAppended()) {
             document.querySelector(selector).append(main);
